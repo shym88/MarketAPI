@@ -1,0 +1,481 @@
+basePath: /
+definitions:
+  model.AccessTokenRes:
+    properties:
+      access_token:
+        type: string
+    type: object
+  model.CardDetailRes:
+    properties:
+      bank_name:
+        type: string
+      card_name:
+        type: string
+      card_number:
+        type: string
+      cvc:
+        type: integer
+      exp_month:
+        type: integer
+      exp_year:
+        type: integer
+      full_name:
+        type: string
+      id:
+        type: integer
+      status:
+        type: boolean
+      user_id:
+        type: integer
+    type: object
+  model.CardReqBody:
+    properties:
+      bank_name:
+        type: string
+      card_name:
+        type: string
+      card_number:
+        type: string
+      cvc:
+        type: integer
+      exp_month:
+        type: integer
+      exp_year:
+        type: integer
+      full_name:
+        type: string
+    required:
+    - bank_name
+    - card_name
+    - card_number
+    - cvc
+    - exp_month
+    - exp_year
+    - full_name
+    type: object
+  model.CardRes:
+    properties:
+      card_name:
+        type: string
+      card_number:
+        type: string
+      exp_month:
+        type: integer
+      exp_year:
+        type: integer
+      full_name:
+        type: string
+      id:
+        type: integer
+    type: object
+  model.LoginReqBody:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  model.PaymentReq:
+    properties:
+      amount:
+        type: number
+      qr_code:
+        type: string
+    required:
+    - amount
+    - qr_code
+    type: object
+  model.QRCodeRes:
+    properties:
+      code:
+        type: string
+    type: object
+  model.TokenRes:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  model.UserReqBody:
+    properties:
+      birthday:
+        type: string
+      email:
+        type: string
+      mobile_phone:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      surname:
+        type: string
+      tc:
+        type: string
+    required:
+    - birthday
+    - email
+    - mobile_phone
+    - name
+    - password
+    - surname
+    - tc
+    type: object
+  model.WalletRes:
+    properties:
+      current_amount:
+        type: number
+      id:
+        type: integer
+      unique_key:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  model.WalletTransactionReqBody:
+    properties:
+      amount:
+        type: number
+      card_number:
+        type: string
+      cvc:
+        type: integer
+      transaction_type:
+        type: integer
+      wallet_id:
+        type: integer
+    required:
+    - amount
+    - card_number
+    - cvc
+    - transaction_type
+    - wallet_id
+    type: object
+host: localhost:9000
+info:
+  contact:
+    email: seymatutan@gmail.com
+    name: Seyma TUTAN GUN
+  description: This is a sample server Market API.
+  title: Market API
+  version: "1.0"
+paths:
+  /api/card/add:
+    post:
+      consumes:
+      - application/json
+      description: Add Card for User
+      parameters:
+      - description: write Bearer before token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: req params
+        in: body
+        name: CardReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/model.CardReqBody'
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Add Card
+      tags:
+      - cards
+  /api/card/get/{id}:
+    get:
+      description: Get Card Details
+      parameters:
+      - description: write Bearer before token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Card ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CardDetailRes'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Card Details
+      tags:
+      - cards
+  /api/card/list:
+    post:
+      description: List user's Card, pagination and sort
+      parameters:
+      - description: write Bearer before token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CardRes'
+      security:
+      - ApiKeyAuth: []
+      summary: List Card
+      tags:
+      - cards
+  /api/deactivate/:id:
+    put:
+      consumes:
+      - application/json
+      description: Deactivate Card
+      parameters:
+      - description: write Bearer before token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Card ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Deactivate Card
+      tags:
+      - cards
+  /api/delete/:id:
+    delete:
+      consumes:
+      - application/json
+      description: Deactivate Card
+      parameters:
+      - description: write Bearer before token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Card ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Card
+      tags:
+      - cards
+  /api/payment/complete:
+    post:
+      consumes:
+      - application/json
+      description: Complete payment with qr code and total amount
+      parameters:
+      - description: write Bearer before token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: req params
+        in: body
+        name: PaymentReq
+        required: true
+        schema:
+          $ref: '#/definitions/model.PaymentReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Complete Payment
+      tags:
+      - payment
+  /api/update/:id:
+    put:
+      consumes:
+      - application/json
+      description: Update Card
+      parameters:
+      - description: write Bearer before token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Card ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: req params
+        in: body
+        name: CardReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/model.CardReqBody'
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Update Card
+      tags:
+      - cards
+  /api/wallet/get:
+    get:
+      consumes:
+      - application/json
+      description: Get Wallet Details
+      parameters:
+      - description: write Bearer before token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WalletRes'
+      security:
+      - ApiKeyAuth: []
+      summary: Get Wallet Details
+      tags:
+      - wallet
+  /api/wallet/load:
+    post:
+      consumes:
+      - application/json
+      description: Load Money to Wallet
+      parameters:
+      - description: write Bearer before token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: req params
+        in: body
+        name: WalletTransactionReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/model.WalletTransactionReqBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      summary: Load Money to Wallet
+      tags:
+      - wallet
+  /api/wallet/qr:
+    get:
+      consumes:
+      - application/json
+      description: Generate Login User QRCode for payment.
+      parameters:
+      - description: write Bearer before token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.QRCodeRes'
+      security:
+      - ApiKeyAuth: []
+      summary: Generate QRCode for payment
+      tags:
+      - wallet
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login with email and password. Pasword must include Must include
+        upper and lowercase, special character, number. Max length 12 and mininum
+        8. Returen access_token and refresh_token
+      parameters:
+      - description: req params
+        in: body
+        name: LoginReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginReqBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.TokenRes'
+      summary: Login
+      tags:
+      - authentication
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Generate access_token from refresh_token
+      parameters:
+      - description: req params
+        in: body
+        name: TokenRes
+        required: true
+        schema:
+          $ref: '#/definitions/model.TokenRes'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AccessTokenRes'
+      summary: Refresh Token
+      tags:
+      - authentication
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: User and user wallet are created
+      parameters:
+      - description: req params
+        in: body
+        name: UserReqBody
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserReqBody'
+      responses:
+        "200":
+          description: OK
+      summary: Register
+      tags:
+      - authentication
+swagger: "2.0"
